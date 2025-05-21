@@ -1,14 +1,16 @@
 # Post-Comments Service
 
-A RESTful API service for managing posts and comments, built with Node.js, Express, and MongoDB.
+A RESTful API service for managing posts and comments with user authentication, built with Node.js, Express, and MongoDB.
 
 ## Features
 
+- User authentication with JWT
 - Create, read, update, and delete posts
 - Add comments to posts
-- Retrieve all comments for a specific post
+- Nested comment structure within posts
+- Role-based access control
+- MongoDB database integration with Mongoose
 - RESTful API design
-- MongoDB database integration
 
 ## Prerequisites
 
@@ -31,8 +33,9 @@ npm install
 
 3. Create a `.env` file in the backend directory with the following variables:
 ```
-PORT=5000
-MONGODB_URI=your_mongodb_connection_string
+PORT = 5500 || <your_port>
+MONGODB_URI = mongodb://127.0.0.1:27017/<your_collection_name> || <your_mongodb_string>
+JWT_SECRET = <your_jwt_secret_key>
 ```
 
 4. Start the server:
@@ -40,35 +43,88 @@ MONGODB_URI=your_mongodb_connection_string
 npm run dev
 ```
 
-The server will start running on http://localhost:5000
+The server will start running on http://localhost:5500
 
 ## API Endpoints
 
+### Authentication
+
+- `POST /api/users/register` - Register a new user
+  - Body: `{ "username": "string", "email": "string", "password": "string" }`
+
+- `POST /api/users/login` - Login user
+  - Body: `{ "email": "string", "password": "string" }`
+
+- `POST /api/users/logout` - Logout user
+
+- `GET /api/users/profile` - Get user profile
+  - Headers: `Authorization: Bearer <token>`
+
 ### Posts
 
-- `POST /api/posts` - Create a new post
-  - Body: `{ "title": "string", "content": "string", "author": "string" }`
+- `GET /api/posts` - Get all posts (public)
+  - Returns posts with populated comments and authors
 
-- `GET /api/posts` - Get all posts
+- `GET /api/posts/:id` - Get a specific post (public)
+  - Returns post with populated comments and author
 
-- `GET /api/posts/:id` - Get a specific post
-
-- `PUT /api/posts/:id` - Update a post
+- `POST /api/posts` - Create a new post (authenticated)
+  - Headers: `Authorization: Bearer <token>`
   - Body: `{ "title": "string", "content": "string" }`
 
-- `DELETE /api/posts/:id` - Delete a post
+- `PUT /api/posts/:id` - Update a post (authenticated, post author only)
+  - Headers: `Authorization: Bearer <token>`
+  - Body: `{ "title": "string", "content": "string" }`
 
-### Comments
+- `DELETE /api/posts/:id` - Delete a post (authenticated, post author only)
+  - Headers: `Authorization: Bearer <token>`
 
-- `POST /api/comments` - Create a new comment
-  - Body: `{ "content": "string", "author": "string", "postId": "string" }`
+### Comments (Nested under Posts)
 
-- `GET /api/comments/post/:postId` - Get all comments for a post
+- `GET /api/posts/:postId/comments` - Get all comments for a post (public)
+  - Returns comments with populated authors
 
-- `PUT /api/comments/:id` - Update a comment
+- `POST /api/posts/:postId/comments` - Create a new comment (authenticated)
+  - Headers: `Authorization: Bearer <token>`
   - Body: `{ "content": "string" }`
 
-- `DELETE /api/comments/:id` - Delete a comment
+- `PUT /api/posts/:postId/comments/:commentId` - Update a comment (authenticated, comment author only)
+  - Headers: `Authorization: Bearer <token>`
+  - Body: `{ "content": "string" }`
+
+- `DELETE /api/posts/:postId/comments/:commentId` - Delete a comment (authenticated, comment author or post author)
+  - Headers: `Authorization: Bearer <token>`
+
+## Authentication
+
+The API uses JWT (JSON Web Tokens) for authentication. To access protected routes:
+
+1. Register or login to get a token
+2. Include the token in the Authorization header:
+```
+Authorization: Bearer <your-token>
+```
+
+## Data Models
+
+### User
+- username (unique)
+- email (unique)
+- password (hashed)
+- timestamps
+
+### Post
+- title
+- content
+- author (ref: User)
+- comments (array of Comment refs)
+- timestamps
+
+### Comment
+- content
+- author (ref: User)
+- post (ref: Post)
+- timestamps
 
 ## Architecture
 
@@ -78,12 +134,23 @@ The service follows a modular architecture:
 - `controllers/` - Business logic and request handling
 - `routes/` - API route definitions
 - `config/` - Configuration files
-- `middleware/` - Custom middleware functions
+- `middleware/` - Authentication and authorization middleware
+
+## Security Features
+
+- Password hashing with bcrypt
+- JWT-based authentication
+- Protected routes with middleware
+- Role-based access control
+- Input validation
+- Error handling
 
 ## Error Handling
 
 The API includes error handling for:
 - Invalid requests
+- Authentication failures
+- Authorization failures
 - Not found resources
 - Server errors
 - Database connection issues
@@ -100,4 +167,4 @@ npm run dev
 To run the server in production mode:
 ```bash
 npm start
-``` 
+```
