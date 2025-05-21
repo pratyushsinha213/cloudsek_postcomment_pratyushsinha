@@ -12,6 +12,39 @@ A RESTful API service for managing posts and comments with user authentication, 
 - MongoDB database integration with Mongoose
 - RESTful API design
 
+## Database Choice: MongoDB
+
+Several reasons contribute for choosing MongoDB database. These include:
+
+1. **Document-Based Structure**:
+   - Posts and comments naturally fit into a document-based model
+   - Each post can contain an array of comment references
+   - Easy to model hierarchical relationships (posts -> comments)
+   - Flexible schema allows for easy modifications and additions
+
+2. **Performance Benefits**:
+   - Efficient querying of nested data structures
+   - Fast retrieval of posts with their associated comments
+   - Good performance for read-heavy operations (viewing posts and comments)
+   - Built-in support for indexing on frequently queried fields
+
+3. **Scalability**:
+   - Horizontal scaling capabilities
+   - Efficient handling of large numbers of posts and comments
+   - Good performance with growing data size
+   - Built-in support for sharding
+
+4. **Developer Experience**:
+   - Mongoose ODM provides a clean, intuitive API
+   - Easy to implement complex queries
+   - Rich querying capabilities
+   - Good support for data validation and middleware
+
+5. **Real-world Applicability**:
+   - Similar to how many social media platforms store their data
+   - Well-suited for content-heavy applications
+   - Excellent for applications with frequent updates
+
 ## Prerequisites
 
 - Node.js (v14 or higher)
