@@ -27,7 +27,6 @@ cd cloudsek_postcomment_pratyushsinha
 
 2. Install dependencies:
 ```bash
-cd backend
 npm install
 ```
 
