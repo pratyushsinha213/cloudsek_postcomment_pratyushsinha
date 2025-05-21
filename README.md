@@ -30,7 +30,7 @@ cd cloudsek_postcomment_pratyushsinha
 npm install
 ```
 
-3. Create a `.env` file in the backend directory with the following variables:
+3. Create a `.env` file in the current directory with the following variables:
 ```
 PORT = 5500 || <your_port>
 MONGODB_URI = mongodb://127.0.0.1:27017/<your_collection_name> || <your_mongodb_string>
