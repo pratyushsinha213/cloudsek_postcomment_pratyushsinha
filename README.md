@@ -21,7 +21,7 @@ A RESTful API service for managing posts and comments with user authentication, 
 
 1. Clone the repository:
 ```bash
-git clone <repository-url>
+git clone https://github.com/pratyushsinha213/cloudsek_postcomment_pratyushsinha
 cd post-comments-service
 ```
 
