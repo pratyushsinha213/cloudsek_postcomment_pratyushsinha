@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 
+// Define the Post schema with required fields and relationships
 const postSchema = new mongoose.Schema({
     title: {
         type: String,
@@ -12,12 +13,12 @@ const postSchema = new mongoose.Schema({
     },
     author: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
+        ref: 'User', // Reference to User model
         required: true
     },
     comments: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Comment'
+        ref: 'Comment' // Reference to Comment model
     }],
     createdAt: {
         type: Date,
@@ -28,9 +29,10 @@ const postSchema = new mongoose.Schema({
         default: Date.now
     }
 }, {
-    timestamps: true
+    timestamps: true // Automatically manage createdAt and updatedAt
 });
 
+// Create and export the Post model
 const Post = mongoose.model('Post', postSchema);
 
 export default Post;

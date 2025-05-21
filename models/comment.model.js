@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 
+// Define the Comment schema with required fields and relationships
 const commentSchema = new mongoose.Schema({
     content: {
         type: String,
@@ -7,12 +8,12 @@ const commentSchema = new mongoose.Schema({
     },
     author: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
+        ref: 'User', // Reference to User model
         required: true
     },
     post: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Post',
+        ref: 'Post', // Reference to Post model
         required: true
     },
     createdAt: {
@@ -24,9 +25,10 @@ const commentSchema = new mongoose.Schema({
         default: Date.now
     }
 }, {
-    timestamps: true
+    timestamps: true // Automatically manage createdAt and updatedAt
 });
 
+// Create and export the Comment model
 const Comment = mongoose.model('Comment', commentSchema);
 
 export default Comment;
