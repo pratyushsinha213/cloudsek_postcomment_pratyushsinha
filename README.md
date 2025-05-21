@@ -26,13 +26,11 @@ Several reasons contribute for choosing MongoDB database. These include:
    - Efficient querying of nested data structures
    - Fast retrieval of posts with their associated comments
    - Good performance for read-heavy operations (viewing posts and comments)
-   - Built-in support for indexing on frequently queried fields
 
 3. **Scalability**:
    - Horizontal scaling capabilities
    - Efficient handling of large numbers of posts and comments
    - Good performance with growing data size
-   - Built-in support for sharding
 
 4. **Developer Experience**:
    - Mongoose ODM provides a clean, intuitive API
