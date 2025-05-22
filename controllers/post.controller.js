@@ -15,7 +15,7 @@ export const createPost = async (req, res) => {
         await post.populate('author', 'username');
         res.status(201).json(post);
     } catch (error) {
-        res.status(400).json({ message: error.message });
+        res.status(500).json({ message: error.message });
     }
 };
 
@@ -89,7 +89,7 @@ export const updatePost = async (req, res) => {
         });
         res.status(200).json(post);
     } catch (error) {
-        res.status(400).json({ message: error.message });
+        res.status(500).json({ message: error.message });
     }
 };
 

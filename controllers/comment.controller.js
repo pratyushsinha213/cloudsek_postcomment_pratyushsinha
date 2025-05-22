@@ -4,7 +4,9 @@ import Post from '../models/post.model.js';
 // Create a new comment
 export const createComment = async (req, res) => {
     try {
-        const { content } = req.body;
+        // Extract content and isMarkdown flag from request body
+        // isMarkdown is optional and defaults to false if not provided
+        const { content, isMarkdown } = req.body;
         const postId = req.params.postId;
         
         // Check if post exists
@@ -13,8 +15,10 @@ export const createComment = async (req, res) => {
             return res.status(404).json({ message: 'Post not found' });
         }
 
+        // Create new comment with content and markdown flag
         const comment = new Comment({
             content,
+            isMarkdown: isMarkdown || false, // Default to false if not specified
             author: req.user._id,
             post: postId
         });
@@ -26,10 +30,11 @@ export const createComment = async (req, res) => {
         await post.save();
 
         // Populate author details before sending response
+        // The response will include both raw content and processedContent (HTML if markdown)
         await comment.populate('author', 'username');
         res.status(201).json(comment);
     } catch (error) {
-        res.status(400).json({ message: error.message });
+        res.status(500).json({ message: error.message });
     }
 };
 
@@ -64,6 +69,8 @@ export const getComments = async (req, res) => {
 export const updateComment = async (req, res) => {
     try {
         const { postId, commentId } = req.params;
+        // Extract content and isMarkdown flag from request body
+        const { content, isMarkdown } = req.body;
         
         // Check if post exists
         const post = await Post.findById(postId);
@@ -83,15 +90,20 @@ export const updateComment = async (req, res) => {
             return res.status(403).json({ message: 'Not authorized to update this comment' });
         }
 
-        const { content } = req.body;
+        // Update comment content
         comment.content = content;
+        // Only update isMarkdown if it's provided in the request
+        if (isMarkdown !== undefined) {
+            comment.isMarkdown = isMarkdown;
+        }
         comment.updatedAt = Date.now();
 
         await comment.save();
+        // Response will include both raw content and processedContent
         await comment.populate('author', 'username');
         res.status(200).json(comment);
     } catch (error) {
-        res.status(400).json({ message: error.message });
+        res.status(500).json({ message: error.message });
     }
 };
 

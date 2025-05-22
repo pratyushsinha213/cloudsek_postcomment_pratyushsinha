@@ -7,16 +7,16 @@ import connectDB from './config/db.js';
 import userRouter from './routes/user.routes.js';
 import postRouter from './routes/post.routes.js';
 
-// Middleware
+// middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-// Routes
+// routes
 app.use('/api/users', userRouter);
 app.use('/api/posts', postRouter);
 
-// Error handling middleware
+// error handling middleware
 app.use((err, req, res, next) => {
     console.error(err.stack);
     res.status(500).json({ message: 'Something went wrong!' });

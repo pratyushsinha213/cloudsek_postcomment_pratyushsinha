@@ -40,7 +40,7 @@ export const register = async (req, res) => {
                 token
             });
     } catch (error) {
-        res.status(400).json({ message: error.message });
+        res.status(500).json({ message: error.message });
     }
 };
 
@@ -72,7 +72,7 @@ export const login = async (req, res) => {
                 token
             });
     } catch (error) {
-        res.status(400).json({ message: error.message });
+        res.status(500).json({ message: error.message });
     }
 };
 
@@ -82,7 +82,7 @@ export const getProfile = async (req, res) => {
         const user = await User.findById(req.user._id).select('-password');
         res.json(user);
     } catch (error) {
-        res.status(400).json({ message: error.message });
+        res.status(500).json({ message: error.message });
     }
 };
 

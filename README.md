@@ -11,6 +11,27 @@ A RESTful API service for managing posts and comments with user authentication, 
 - Role-based access control
 - MongoDB database integration with Mongoose
 - RESTful API design
+- Rich text support in comments using Markdown
+
+## Rich Text Support
+
+Comments support Markdown formatting for rich text. To use rich text in a comment:
+
+1. Set `isMarkdown: true` in the request body when creating or updating a comment
+2. Use Markdown syntax in the content:
+   - `**bold text**` for bold text
+   - `*italic text*` for italic text
+   - `[link text](url)` for hyperlinks
+
+Example comment with Markdown:
+```json
+{
+  "content": "This is **bold** and *italic* text with a [link](https://example.com)",
+  "isMarkdown": true
+}
+```
+
+The API will automatically convert Markdown to HTML when returning comments. The `processedContent` field contains the HTML version of the content.
 
 ## Database Choice: MongoDB
 
@@ -64,7 +85,7 @@ npm install
 3. Create a `.env` file in the current directory with the following variables:
 ```
 PORT = 5500 || <your_port>
-MONGODB_URI = mongodb://127.0.0.1:27017/<your_collection_name> || <your_mongodb_string>
+MONGODB_URI = (local) mongodb://127.0.0.1:27017/postcomments || (atlas -> cloud) mongodb+srv://pratyushsinha:cloudsek@cluster0.w5vs8yz.mongodb.net/postcomments?retryWrites=true&w=majority&appName=Cluster0
 JWT_SECRET = <your_jwt_secret_key>
 ```
 
@@ -74,6 +95,31 @@ npm run dev
 ```
 
 The server will start running on http://localhost:5500
+
+## Seeding the Database
+
+The project includes a seed script to populate the database with sample data. The seed data includes:
+
+- 4 sample users
+- 5 sample posts about different topics
+- Multiple comments per post with rich text support
+
+To seed the database:
+```bash
+npm run seed
+```
+
+This will create:
+- Users with different usernames and emails
+- Posts about various web development topics
+- Comments with both Markdown and plain text content
+- A realistic distribution of comments across posts
+
+Sample user credentials after seeding:
+- User 1: `john@example.com` / `password123`
+- User 2: `jane@example.com` / `password123`
+- User 3: `alex@example.com` / `password123`
+- User 4: `sarah@example.com` / `password123`
 
 ## API Endpoints
 
@@ -116,11 +162,11 @@ The server will start running on http://localhost:5500
 
 - `POST /api/posts/:postId/comments` - Create a new comment (authenticated)
   - Headers: `Authorization: Bearer <token>`
-  - Body: `{ "content": "string" }`
+  - Body: `{ "content": "string", "isMarkdown": boolean }`
 
 - `PUT /api/posts/:postId/comments/:commentId` - Update a comment (authenticated, comment author only)
   - Headers: `Authorization: Bearer <token>`
-  - Body: `{ "content": "string" }`
+  - Body: `{ "content": "string", "isMarkdown": boolean }`
 
 - `DELETE /api/posts/:postId/comments/:commentId` - Delete a comment (authenticated, comment author or post author)
   - Headers: `Authorization: Bearer <token>`
@@ -152,9 +198,11 @@ Authorization: Bearer <your-token>
 
 ### Comment
 - content
+- isMarkdown (boolean)
 - author (ref: User)
 - post (ref: Post)
 - timestamps
+- processedContent (virtual, HTML if markdown)
 
 ## Architecture
 
@@ -174,6 +222,7 @@ The service follows a modular architecture:
 - Role-based access control
 - Input validation
 - Error handling
+- Markdown sanitization
 
 ## Error Handling
 
